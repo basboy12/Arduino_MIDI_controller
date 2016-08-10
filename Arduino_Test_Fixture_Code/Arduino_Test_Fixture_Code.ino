@@ -43,7 +43,7 @@ void setup() {
   Serial.println("ldrButton OK");
 
   int timer = millis();
-  while (millis() - timer < 2500) {
+  while (millis() - timer < 3500) {
     Serial.print("Testing ldr, move your hand up and down  |  Recieved value: ");
     Serial.println(analogRead(ldrSensor));
   }
