@@ -5,8 +5,8 @@
 #define DEFAULT_OCTAVE 5    // Set the default octave when switching on your Arduino. 5 = note C5, 4 = note C4, etc.
 #define RES 50
 
-#define octaveUpBtn A3
-#define octaveDownBtn A2
+#define octaveUpBtn A2
+#define octaveDownBtn A3
 #define ldrSensor A0
 #define ldrBtn A4
 #define statusLed A5
