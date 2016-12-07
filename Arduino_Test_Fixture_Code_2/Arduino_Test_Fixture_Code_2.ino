@@ -1,8 +1,8 @@
 #include <CapacitiveSensor.h>
 
 #define numberOfInputs 12   // define the number of inputs. Do not choose more inputs than capacitive sensors connected to your Arduino. It will cause an error.
-#define THRESSHOLD 260      // define the thresshold at which midi messages will be activated.
 #define DEFAULT_OCTAVE 5    // Set the default octave when switching on your Arduino. 5 = note C5, 4 = note C4, etc.
+#define THRESSHOLD 1000      // define the thresshold at which midi messages will be activated.
 #define RES 50
 
 

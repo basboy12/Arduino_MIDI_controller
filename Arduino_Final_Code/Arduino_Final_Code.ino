@@ -1,8 +1,9 @@
 #include <CapacitiveSensor.h>
 
 #define numberOfInputs 12   // define the number of inputs. Do not choose more inputs than capacitive sensors connected to your Arduino. It will cause an error.
-#define THRESSHOLD 260      // define the thresshold at which midi messages will be activated.
-#define DEFAULT_OCTAVE 5    // Set the default octave when switching on your Arduino. 5 = note C5, 4 = note C4, etc.
+#define DEFAULT_OCTAVE 5    // set the default octave when switching on your Arduino. 5 = note C5, 4 = note C4, etc.
+#define NOTE_VELOCITY 100   // set the default velocity of all MIDI notes, the range is from 0 to 127
+#define THRESSHOLD 1000     // define the thresshold at which midi messages will be activated.
 #define RES 50
 
 #define octaveUpBtn A2
@@ -13,8 +14,8 @@
 #define sendPin A1          // define the send pin. 
 #define firstRecievePin 2   // define the first receive pin.
 
-boolean midiMode = false;   // if midiMode = false, the Arduino will send on and off messages via the serial monitor.
-//Set the value to true if you want the Arduino to act as a Midi device
+boolean midiMode = false;    // if midiMode = false, the Arduino will send on and off messages via the serial monitor.
+                            // if midiMode = true, the Arduino will act as a native MIDI device.
 
 CapacitiveSensor * capSensor[numberOfInputs];
 unsigned long previousMillis;
@@ -26,14 +27,14 @@ boolean lastLdrBtnState;
 boolean ldrIsActive;
 boolean ledState;
 int ldrMin = 200;
-int ldrMax = 0;
+int ldrMax = 200;
 int ldrValue;
 int lastLdrValue;
 
 //________________________________________________________________________________________________________________________________________
 void setup() {
   if (midiMode) {
-    Serial.begin(31250);
+    Serial.begin(31250); // this is the standard communication baudrate for MIDI devices, do not change this!
   }
   else {
     Serial.begin(9600);
@@ -105,8 +106,14 @@ void loop() {
 
   for ( int i = 0; i < numberOfInputs; i++) {
     if (capSensor[i]->capacitiveSensor(RES) > THRESSHOLD && !isActive[i] ) {
-      sendMidi(0x90, 12 * octaveValue + i, capSensor[i]->capacitiveSensor(RES));
+      if (midiMode) {
+        sendMidi(0x90, 12 * octaveValue + i, NOTE_VELOCITY);
+      }
+      else {
+        sendMidi(0x90, 12 * octaveValue + i, capSensor[i]->capacitiveSensor(RES));
+      }
       isActive[i] = true;
+      
     }
     if (capSensor[i]->capacitiveSensor(RES) < THRESSHOLD && isActive[i]) {
       sendMidi(0x90, 12 * octaveValue + i, 0);
@@ -140,10 +147,3 @@ void sendMidi(int statusbyte, int databyte1, int databyte2) {
     }
   }
 }
-
-
-
-
-
-
-
